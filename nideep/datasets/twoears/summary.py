@@ -477,7 +477,7 @@ def summary_bacc_id_nSrcs_box(paths_infer):
                     bacc = np.array([x['bacc_cl_max'] for x in m['id_bacc']]).flatten()
                     bacc_masked = bacc[np.logical_not(np.isnan(bacc))]
                     data.append(bacc_masked)
-                    labels_cur = r'%s' % (m_info.replace('conv.', '').replace('brir|', '')..rstrip('_').rstrip(' ').rstrip(',').rstrip(' '),)
+                    labels_cur = r'%s' % (m_info.replace('conv.', '').replace('brir|', '').rstrip('_').rstrip(' ').rstrip(',').rstrip(' '),)
                     print labels_cur, np.median(bacc_masked), bacc_masked.size
                     labels.append('sources:%d%s' % (nSrcs_val, labels_cur))
 #                     bacc_masked = bacc_masked*c[nSrcs_val]
