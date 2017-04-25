@@ -46,7 +46,11 @@ def get_model_keys(h, key_label='label_id_loc'):
                                'do_invert' : False})
     return model_keys
     
-def eval_summary(fpath_infer, num_points=None, key_label='label_id_loc'):
+def eval_summary(fpath_infer,
+                 num_points=None,
+                 key_label='label_id_loc',
+                 classnames=None,
+                 num_azimuths=None):
     
     with h5py.File(fpath_infer, 'r') as h:
         if num_points is None:
