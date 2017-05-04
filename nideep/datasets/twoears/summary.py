@@ -29,11 +29,11 @@ def get_model_keys(h, key_label='label_id_loc'):
     model_keys = []
     for key in h.keys():
 #         print('%s: %s' % (key, h[key].shape))
-        if 'void' in key:
+        if 'void' in key and 'novoid' not in key:
             model_keys.append({'pred_name' : key,
                                'pred_type' : 'id',
                                'do_invert' : True})
-        elif 'bin' in key:
+        elif 'bin' in key or 'novoid' in key:
             model_keys.append({'pred_name' : key,
                                'pred_type' : 'loc',
                                'do_invert' : False})
