@@ -16,6 +16,23 @@ CURRENT_MODULE_PATH = os.path.abspath(sys.modules[__name__].__file__)
 ROOT_PKG_PATH = os.path.dirname(CURRENT_MODULE_PATH)
 TEST_DATA_DIRNAME = 'test_data'
 
+def test_filter_is_img():
+
+    assert_false(fs.filter_is_img('foo.bar'))
+    assert_false(fs.filter_is_img('foo.png.bar'))
+    assert_true(fs.filter_is_img('foo.png'))
+    assert_true(fs.filter_is_img('foo.jpg'))
+
+def test_filter_is_h5():
+
+    assert_false(fs.filter_is_h5('foo.bar'))
+    assert_false(fs.filter_is_h5('foo.h5.bar'))
+    assert_false(fs.filter_is_h5('foo.hdf'))
+    assert_false(fs.filter_is_h5('foo.h4'))
+    assert_false(fs.filter_is_h5('foo.hdf4'))
+    assert_true(fs.filter_is_h5('foo.h5'))
+    assert_true(fs.filter_is_h5('foo.hdf5'))
+
 class TestFSUtils:
 
     @classmethod
@@ -23,13 +40,6 @@ class TestFSUtils:
 
         self.dir_ = os.path.join(os.path.dirname(ROOT_PKG_PATH),
                                           TEST_DATA_DIRNAME)
-
-    def test_filter_is_img(self):
-
-        assert_false(fs.filter_is_img('foo.bar'))
-        assert_false(fs.filter_is_img('foo.png.bar'))
-        assert_true(fs.filter_is_img('foo.png'))
-        assert_true(fs.filter_is_img('foo.jpg'))
 
     def test_gen_paths_no_filter(self):
 
