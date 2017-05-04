@@ -61,7 +61,6 @@ def eval_summary(fpath_infer,
             key_pred = m['pred_name']
             gt = h[key_label]
             pred = h[key_pred]
-    #         print h.file, key_pred, pred.shape, m['pred_type']
             if m['pred_type'] == 'id':
                 gt = np.squeeze(gt[:num_points,:,:,-1])
                 # handle different prediction shapes

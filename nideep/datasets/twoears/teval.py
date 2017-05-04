@@ -11,6 +11,9 @@ from sklearn.calibration import calibration_curve
 import nideep.eval.log_utils as lu
 from nideep.eval.learning_curve import LearningCurve
 from nideep.eval.eval_utils import Phase
+from matplotlib._png import read_png
+from matplotlib.offsetbox import OffsetImage, \
+    AnnotationBbox
 
 colors_base = ['b', 'g', 'r', 'c', 'm', 'y', 'k', '0.3', '0.5', '0.75', 'chartreuse', 'burlywood', 'aqua']
 
