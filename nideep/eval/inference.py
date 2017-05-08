@@ -15,20 +15,33 @@ def infer_to_h5_fixed_dims(net, keys, n, dst_fpath, preserve_batch=False):
     """
     Run network inference for n batches and save results to file
     """
-    dc = {k:[] for k in keys}
-    for _ in range(n):
-        d = forward(net, keys)
-        for k in keys:
-            if preserve_batch:
-                dc[k].append(np.copy(d[k]))
-            else:
-                dc[k].extend(np.copy(d[k]))
-
     with h5py.File(dst_fpath, "w") as f:
-        for k in keys:
-            f[k] = dc[k]
-
-    return [len(dc[k]) for k in keys]
+        batch_sz = None
+        idx_start = 0
+        for itr in xrange(n):
+            d = forward(net, keys)
+            for k in keys:
+                if preserve_batch:
+                    d_copy = np.copy(d[k])
+                    if k not in f:
+                        shape_all = [n]
+                        shape_all.extend(list(d_copy.shape))
+                        f.create_dataset(k, tuple(shape_all), d_copy.dtype)
+                    f[k][itr] = d_copy
+                else:
+                    # assume same batch size for all keys
+                    if batch_sz is None:
+                        batch_sz = d[k].shape[0]
+                        for k2 in keys:
+                            shape_all = list(d[k].shape)
+                            shape_all[0] = n*batch_sz
+                            f.create_dataset(k2, tuple(shape_all), d[k].dtype)
+                    d_copy = np.copy(d[k])
+                    f[k][idx_start:idx_start+batch_sz] = d_copy
+            if not preserve_batch:
+                idx_start += batch_sz
+        l = [len(f[k]) for k in f.keys()]
+    return l
 
 def infer_to_lmdb(net, keys, n, dst_prefix):
     """

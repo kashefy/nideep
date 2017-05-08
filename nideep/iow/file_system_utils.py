@@ -31,6 +31,11 @@ def filter_is_img(fname):
 
     return ext in ['.bmp', '.jpg', '.png', '.tif']
 
+def filter_is_h5(fname):
+    
+    _, ext = os.path.splitext(fname)
+    return ext in ['.h5', '.hdf5']
+
 def fname_pairs(paths_a, paths_b):
     """
     find filename pairs between two lists.
