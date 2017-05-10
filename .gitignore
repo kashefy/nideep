@@ -94,3 +94,9 @@ slprj/
 
 # Session info
 octave-workspace
+
+# Pycharm files
+.idea/
+
+# Merge files
+*.orig

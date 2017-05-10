@@ -3,8 +3,8 @@ Created on Oct 30, 2015
 
 @author: kashefy
 '''
-from nose.tools import assert_equal, assert_false, assert_almost_equals, \
-    assert_not_equal, assert_list_equal, assert_raises
+from nose.tools import assert_equal, assert_false, \
+    assert_not_equal, assert_list_equal, assert_raises, raises
 from mock import patch, PropertyMock
 import os
 import tempfile
@@ -258,6 +258,69 @@ class TestReadValuesWithLabelLMDB:
 #         v = r.read_values(path_lmdb)
 #         print v
 #         print "-------"
+
+    @patch('nideep.iow.read_lmdb.caffe.proto.caffe_pb2.Datum')
+    def test_read_values_at(self, mock_dat):
+
+        # mocks
+        dstr = ['\x01\x04\x07\n\r\x10\x13\x16\x02\x05\x08\x0b\x0e\x11\x14\x17\x03\x06\t\x0c\x0f\x12\x15\x18',
+                '\x10\x16\x11\x17\x12\x18']
+
+        mock_dat.return_value.ParseFromString.return_value = ""
+        type(mock_dat.return_value).data = PropertyMock(side_effect=dstr)
+        type(mock_dat.return_value).channels = PropertyMock(side_effect=[3, 3])
+        type(mock_dat.return_value).height = PropertyMock(side_effect=[4, 2])
+        type(mock_dat.return_value).width = PropertyMock(side_effect=[2, 1])
+        type(mock_dat.return_value).label = PropertyMock(side_effect=[1, 0])
+
+        x, l = r.read_values_at(self.path_lmdb, 0)
+        for ch in range(3):
+            for row in range(4):
+                for col in range(2):
+                    assert_equal(x[ch, row, col], self.img1_data[row, col, ch])
+        assert_equal(l, 1, "Unexpected 1st label")
+
+        x, l = r.read_values_at(self.path_lmdb, 1)
+        img2_data = self.img1_data[2:, 1:, :]
+        for ch in range(3):
+            for row in range(2):
+                for col in range(1):
+                    assert_equal(x[ch, row, col], img2_data[row, col, ch])
+        assert_equal(l, 0, "Unexpected 2nd label")
+        
+    @patch('nideep.iow.read_lmdb.caffe.proto.caffe_pb2.Datum')
+    def test_read_values_at_key_string(self, mock_dat):
+
+        # mocks
+        dstr = ['\x01\x04\x07\n\r\x10\x13\x16\x02\x05\x08\x0b\x0e\x11\x14\x17\x03\x06\t\x0c\x0f\x12\x15\x18',
+                '\x10\x16\x11\x17\x12\x18']
+
+        mock_dat.return_value.ParseFromString.return_value = ""
+        type(mock_dat.return_value).data = PropertyMock(side_effect=dstr)
+        type(mock_dat.return_value).channels = PropertyMock(side_effect=[3, 3])
+        type(mock_dat.return_value).height = PropertyMock(side_effect=[4, 2])
+        type(mock_dat.return_value).width = PropertyMock(side_effect=[2, 1])
+        type(mock_dat.return_value).label = PropertyMock(side_effect=[1, 0])
+
+        x, l = r.read_values_at(self.path_lmdb, "0")
+        for ch in range(3):
+            for row in range(4):
+                for col in range(2):
+                    assert_equal(x[ch, row, col], self.img1_data[row, col, ch])
+        assert_equal(l, 1, "Unexpected 1st label")
+
+        x, l = r.read_values_at(self.path_lmdb, "1")
+        img2_data = self.img1_data[2:, 1:, :]
+        for ch in range(3):
+            for row in range(2):
+                for col in range(1):
+                    assert_equal(x[ch, row, col], img2_data[row, col, ch])
+        assert_equal(l, 0, "Unexpected 2nd label")
+        
+    @raises(TypeError)
+    def test_read_values_at_out_of_bounds(self):
+
+        r.read_values_at(self.path_lmdb, 2)
 
 class TestReadArraysLMDB:
 
