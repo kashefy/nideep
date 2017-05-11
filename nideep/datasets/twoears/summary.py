@@ -4,6 +4,7 @@ Created on Apr 19, 2017
 @author: kashefy
 '''
 import pickle
+import itertools as itrt
 import numpy as np
 import h5py
 from nideep.datasets.twoears.teval import * # TODO: FIX
