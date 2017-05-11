@@ -33,6 +33,7 @@ class TestEntity:
         self.path_video = os.path.join(self.dir_tmp, self.entity_name + '.flv')
         self.path_au_labels = os.path.join(self.dir_tmp, self.entity_name + '-label.csv')
         self.path_landmarks = os.path.join(self.dir_tmp, self.entity_name + '-landmarks.txt')
+        self.cache_dir = os.path.join(self.dir_tmp, 'cache/')
         
         # fake video files
         write_dummy_txt(os.path.join(self.path_video))
@@ -54,7 +55,7 @@ class TestEntity:
             MagicMock(side_effect=[True]*(TestEntity.NUM_FRAMES) + [False])
         node_instance.grab.return_value = True
         
-        e = Entity(self.path_video, self.path_au_labels, self.path_landmarks)
+        e = Entity(self.path_video, self.path_au_labels, self.path_landmarks, self.cache_dir)
         t = e.timestamps_sec()
         assert_list_equal(t, [x/1000. for x in pos_sec])
         
@@ -77,7 +78,7 @@ class TestEntity:
             h.write("%f,50.0,66.6\n" % pos_sec[4])
             h.write("%f,50.0,0.0\n" % pos_sec[5])
         
-        e = Entity(self.path_video, self.path_au_labels, self.path_landmarks)
+        e = Entity(self.path_video, self.path_au_labels, self.path_landmarks, self.cache_dir)
         labels, col_names = e.dense_labels()
         
         assert_list_equal(col_names, ["Smile", "AU04"], "unexpected column names")
@@ -111,7 +112,7 @@ class TestEntity:
             h.write("Time,Smile,AU04\n")
             h.write("0.0,0.0,0.0\n")
             
-        e = Entity(self.path_video, self.path_au_labels, self.path_landmarks)
+        e = Entity(self.path_video, self.path_au_labels, self.path_landmarks, self.cache_dir)
         labels, col_names = e.dense_labels()
         
         assert_list_equal(col_names, ["Smile", "AU04"], "unexpected column names")

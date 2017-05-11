@@ -45,6 +45,11 @@ def get_model_keys(h, key_label='label_id_loc'):
             model_keys.append({'pred_name' : key,
                                'pred_type' : 'loc',
                                'do_invert' : False})
+        elif 'nsrcs' in key.lower():
+            model_keys.append({'pred_name' : key,
+                               'pred_type' : 'nsrcs',
+                               'do_invert' : False})
+            
     return model_keys
     
 def eval_summary(fpath_infer,
